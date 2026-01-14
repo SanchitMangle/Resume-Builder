@@ -8,6 +8,8 @@ await connectDB();
 const app = express();
 const PORT = 8080;
 
+app.use(express.json());
+
 app.get("/", (req, res) => res.send("API WORKING"))
 
 app.listen(PORT, () => console.log(`Server running on PORT : ${PORT}`))
