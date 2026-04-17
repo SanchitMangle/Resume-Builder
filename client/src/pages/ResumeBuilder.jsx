@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { data, Link, useParams } from 'react-router-dom'
 import { dummyResumeData } from '../assets/assets.js'
 import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, FileText, FolderIcon, GraduationCap, Sparkles, User } from 'lucide-react'
 import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview.jsx'
 import TemplateSelector from '../components/TemplateSelector.jsx'
 import ColorPicker from '../components/ColorPicker.jsx'
+import ProfessionalSummaryForm from '../components/ProfessionalSummaryForm.jsx'
+import ExperienceForm from '../components/ExperienceForm.jsx'
+import EducationForm from '../components/EducationForm.jsx'
+import ProjectForm from '../components/ProjectForm.jsx'
 
 const ResumeBuilder = () => {
 
@@ -95,6 +99,24 @@ const ResumeBuilder = () => {
                                         setRemoveBackground={setRemoveBackground}
                                     />
                                 )}
+
+                                {activeSection.id === 'summary' && (
+                                    <ProfessionalSummaryForm data={resumeData.professional_summary} onChange={(data) => setResumeData(prev => ({ ...prev, professional_summary: data }))} setResumeData={setResumeData} />
+                                )}
+
+                                {activeSection.id === 'experience' && (
+                                    <ExperienceForm data={resumeData.experience} onChange={(data) => setResumeData(prev => ({ ...prev, experience: data }))} />
+                                )}
+
+                                {activeSection.id === 'education' && (
+                                    <EducationForm data={resumeData.education} onChange={(data) => setResumeData(prev => ({ ...prev, education: data }))} />
+                                )}
+
+                                {activeSection.id === 'projects' && (
+                                    <ProjectForm data={resumeData.project} onChange={(data) => setResumeData(prev => ({ ...prev, project: data }))} />
+                                )}
+
+
                             </div>
 
                         </div>
