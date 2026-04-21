@@ -1,9 +1,43 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { dummyResumeData } from '../assets/assets.js';
+import Loader from '../components/Loader';
+import ResumePreview from '../components/ResumePreview';
+import { ArrowLeft } from 'lucide-react';
 
 const Preview = () => {
-    return (
-        <div>
 
+    const { resumeId } = useParams();
+
+    const [resumeData, setResumeData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true)
+
+    const loadResume = async () => {
+        setResumeData(dummyResumeData.find((resume) => resume._id === resumeId || null))
+    }
+
+    useEffect(() => {
+        loadResume();
+        setIsLoading(false);
+    }, [])
+
+    return resumeData ? (
+        <div className='bg-slate-100'>
+            <div className='max-w-3xl mx-auto py-10'>
+                <ResumePreview data={resumeData} template={resumeData.template} accenetColor={resumeData.accent_color} className='py-4 bg-white' />
+            </div>
+        </div>
+    ) : (
+        <div>
+            {isLoading ? <Loader /> : (
+                <div className='flex flex-col items-center justify-center h-screen '>
+                    <p className='text-center text-6xl text-slate-400 font-medium'>Resume not found.</p>
+                    <a href="/" className='mt-6 bg-green-500 hover:bg-green-600 text-white rounded-full px-6 m-1 h-9 ring-offset-1 ring-1 ring-green-400 flex items-center transition-colors'>
+                        <ArrowLeft className='mr-2 size-4' />
+                        go to home page.
+                    </a>
+                </div>
+            )}
         </div>
     )
 }
