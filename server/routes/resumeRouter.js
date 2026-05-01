@@ -1,14 +1,18 @@
 import express from 'express'
-import { createResume, deleteRsume, getPublicResumeById, getResumeById, updateResume } from '../controllers/resumeController.js';
+import { createResume, deleteResume, getPublicResumeById, getResumeById, getResumes, renameResume, updateResume } from '../controllers/resumeController.js';
 import protect from '../middlewares/auth.js'
 import { upload } from '../config/multer.js';
+import { validateRequest } from '../middlewares/validateRequest.js';
+import { createResumeSchema, updateResumeSchema } from '../validators/resumeValidators.js';
 
 const resumeRouter = express.Router();
 
-resumeRouter.post('/create', protect, createResume)
-resumeRouter.get('/get/:resumeId', protect, getResumeById)
+resumeRouter.get('/', protect, getResumes)
+resumeRouter.post('/', protect, validateRequest(createResumeSchema), createResume)
 resumeRouter.get('/public/:resumeId', getPublicResumeById)
-resumeRouter.put('/update', upload.single('image'), protect, updateResume)
-resumeRouter.delete('/delete/:resumeId', protect, deleteRsume)
+resumeRouter.get('/:resumeId', protect, getResumeById)
+resumeRouter.put('/:resumeId', upload.single('image'), protect, validateRequest(updateResumeSchema), updateResume)
+resumeRouter.patch('/:resumeId/rename', protect, renameResume)
+resumeRouter.delete('/:resumeId', protect, deleteResume)
 
 export default resumeRouter;

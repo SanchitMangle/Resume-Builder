@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Divide, Plus, Sparkles, X } from 'lucide-react'
+import { Plus, Sparkles, X } from 'lucide-react'
 
 const SkillsForm = ({ data, onChange }) => {
 
@@ -13,7 +13,8 @@ const SkillsForm = ({ data, onChange }) => {
     }
 
     const removeSkill = (index) => {
-        const update = data.filter((_, idx) => idx !== index)
+        const updated = data.filter((_, idx) => idx !== index)
+        onChange(updated)
     }
 
     const handlKeyPress = (e) => {
@@ -43,7 +44,7 @@ const SkillsForm = ({ data, onChange }) => {
                             data.map((skill, index) => (
                                 <span key={index} className='flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm'>
                                     {skill}
-                                    <button onClick={() => removeSkill(index)} className='mi-1 hover:bg-blue-200 rounded-full p-0.5 transition-colors'>
+                                    <button onClick={() => removeSkill(index)} className='ml-1 hover:bg-blue-200 rounded-full p-0.5 transition-colors'>
                                         <X className='w-3 h-3' />
                                     </button>
                                 </span>
@@ -60,7 +61,7 @@ const SkillsForm = ({ data, onChange }) => {
             }
 
             <div className='bg-blue-50 p-3 rounded-lg'>
-                <p className='text-sm text-blue-800'><strong>Tip:</strong>Add 8-12 relevent skills include both techical skills (programming languages,tools) an soft skills (leadership,communication). </p>
+                <p className='text-sm text-blue-800'><strong>Tip:</strong> Add 8-12 relevant skills, including both technical skills (programming languages, tools) and soft skills (leadership, communication).</p>
             </div>
         </div>
     )

@@ -1,42 +1,23 @@
-import User from "../model/User.js";
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
-import Resume from "../model/resume.js";
+import ApiError from "../utils/ApiError.js";
+import {
+    getUserById as getUserByIdService,
+    getUserResumes as getUserResumesService,
+    login as loginService,
+    register as registerService,
+} from "../services/authService.js";
 
-const generateToken = async (userId) => {
-    const token = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
-    return token;
-}
+const ok = (res, data, message, status = 200) => res.status(status).json({ success: true, data, message });
+const fail = (res, message, status = 400) => res.status(status).json({ success: false, message });
 
 // Controller for user registration
 // POST:/api/users/register
 export const registerUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
-
-        // Check all feilds
-        if (!name || !email || !password) {
-            return res.status(400).json({ message: "Missing required feilds" })
-        }
-        // Check user existance
-        const existinguser = await User.findOne({ email })
-
-        if (existinguser) {
-            return res.status(400).json({ message: "User already exists" })
-        }
-
-        // create user 
-        const hashPassword = await bcrypt.hash(password, 10)
-        const newUser = await User.create({ name, email, password: hashPassword })
-
-        // return success message 
-        const token = generateToken(newUser._id);
-        newUser.password = undefined;
-
-        return res.status(201).json({ message: "User created successfully", token, user: newUser })
+        const data = await registerService(req.body);
+        return ok(res, data, "User created successfully", 201)
     } catch (error) {
-        console.log(error);
-        return res.status(400).json({ message: error.message })
+        if (error instanceof ApiError) return fail(res, error.message, error.statusCode);
+        return fail(res, error.message)
     }
 }
 
@@ -45,27 +26,11 @@ export const registerUser = async (req, res) => {
 // POST:/api/users/login
 export const userLogin = async (req, res) => {
     try {
-        const { email, password } = req.body;
-        // check user exist 
-        const user = await User.findOne({ email });
-
-        if (!user) {
-            return res.status(400).json({ message: "Invalid email or passsword" })
-        }
-
-        // check passsword
-        if (!user.copmarePassword(password)) {
-            return res.status(400).json({ message: "Invalid email or passsword" })
-        }
-
-        // return success message
-        const token = generateToken(newUser._id);
-        user.password = undefined;
-
-        return res.status(201).json({ message: "login successfully", token, user })
+        const data = await loginService(req.body);
+        return ok(res, data, "Login successful")
     } catch (error) {
-        console.log(error);
-        return res.status(400).json({ message: error.message })
+        if (error instanceof ApiError) return fail(res, error.message, error.statusCode);
+        return fail(res, error.message)
     }
 }
 
@@ -74,18 +39,11 @@ export const userLogin = async (req, res) => {
 // GET:/api/users/data
 export const getUserById = async (req, res) => {
     try {
-        const userId = req.userId
-        const user = await User.findById(userId)
-
-        if (!user) {
-            return res.status(400).json({ message: "User not found" })
-        }
-
-        user.password = undefined;
-        return res.status(201).json({ user })
+        const data = await getUserByIdService(req.userId);
+        return ok(res, data)
     } catch (error) {
-        console.log(error);
-        return res.status(400).json({ message: error.message })
+        if (error instanceof ApiError) return fail(res, error.message, error.statusCode);
+        return fail(res, error.message)
     }
 }
 
@@ -93,13 +51,10 @@ export const getUserById = async (req, res) => {
 // GET:/api/users/resumes
 export const getUserResumes = async (req, res) => {
     try {
-        const userId = req.userId;
-
-        // return user  resumes
-        const resumes = await Resume.find({ userId });
-        return res.status(200).jsson({ resumes })
+        const data = await getUserResumesService(req.userId);
+        return ok(res, data)
     } catch (error) {
-        console.log(error);
-        return res.status(400).json({ message: error.message })
+        if (error instanceof ApiError) return fail(res, error.message, error.statusCode);
+        return fail(res, error.message)
     }
 }
