@@ -2,7 +2,9 @@
 
 ResumeAI is a modern, full-stack web application designed to help professionals create stunning, ATS-optimized resumes in minutes. Leveraging the power of AI, ResumeAI provides content suggestions, real-time analysis, and seamless PDF exports, all within a sleek and intuitive interface.
 
-![ResumeAI Preview](https://via.placeholder.com/1200x600?text=ResumeAI+Dashboard+Preview)
+🌐 Live Demo
+
+👉 Try ResumeAI here:[ResumeAI](https://resume-builder-ruby-six.vercel.app/)
 
 ## 🚀 Features
 
